@@ -18,7 +18,6 @@
       --neon-blue: #58a6ff;
       --neon-pink: #ff79c6;
       --deep-bg: #03050a;
-      --glass-bg: rgba(10, 15, 25, 0.55);
     }
 
     body {
@@ -34,18 +33,10 @@
       width: 100%;
       height: 100%;
       height: 100dvh;
-      touch-action: pan-x pan-y; 
+      touch-action: pan-x pan-y;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
       -webkit-user-select: none;
-    }
-
-    /* ---------- SVG Filters for Organic Fluid Effect ---------- */
-    .svg-filters {
-      position: absolute;
-      width: 0;
-      height: 0;
-      pointer-events: none;
     }
 
     /* ---------- Particle Canvas ---------- */
@@ -144,9 +135,8 @@
       height: 200%;
       margin-left: -50%;
       margin-top: -50%;
-      background-image: 
-        linear-gradient(rgba(88, 166, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(88, 166, 255, 0.04) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(88, 166, 255, 0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(88, 166, 255, 0.04) 1px, transparent 1px);
       background-size: 60px 60px;
       transform: rotateX(60deg) translateY(-120px);
       animation: gridScroll 20s linear infinite;
@@ -187,7 +177,7 @@
       }
     }
 
-    /* ---------- Glass Poster ---------- */
+    /* ---------- Glass Poster (Fixed double rendering) ---------- */
     .poster {
       width: 100%;
       height: 100%;
@@ -200,15 +190,15 @@
       flex-direction: column;
       justify-content: space-between;
       border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 
-        0 40px 80px rgba(0, 0, 0, 0.9),
-        0 0 0 1px rgba(88, 166, 255, 0.15) inset,
-        0 0 60px rgba(88, 166, 255, 0.08);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(88, 166, 255, 0.15) inset, 0 0 60px rgba(88, 166, 255, 0.08);
       transition: transform 0.15s ease-out, box-shadow 0.25s ease;
       position: relative;
       overflow: hidden;
       transform-style: preserve-3d;
       animation: neonBreath 4s ease-in-out infinite alternate;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0); /* Ensures single rendering layer */
     }
 
     @keyframes neonBreath {
@@ -222,7 +212,7 @@
       }
     }
 
-    /* Holographic Glare Effect */
+    /* Holographic Glare */
     .glare {
       position: absolute;
       top: 0;
@@ -236,9 +226,9 @@
       z-index: 4;
       transition: all 0.3s ease;
       mix-blend-mode: overlay;
+      backface-visibility: hidden;
     }
 
-    /* Content Layer with 3D Depth Transmission */
     .poster-content {
       position: relative;
       z-index: 10;
@@ -246,7 +236,7 @@
       flex-direction: column;
       height: 100%;
       transform: translateZ(30px);
-      transform-style: preserve-3d;
+      backface-visibility: hidden;
     }
 
     /* ---------- Brand ---------- */
@@ -264,7 +254,6 @@
       animation: gradientText 6s ease infinite;
       margin-bottom: 4px;
       filter: drop-shadow(0 0 15px rgba(88, 166, 255, 0.4));
-      transform: translateZ(45px);
     }
 
     @keyframes gradientText {
@@ -280,10 +269,9 @@
       color: rgba(255, 255, 255, 0.5);
       text-transform: uppercase;
       margin-bottom: 22px;
-      transform: translateZ(30px);
     }
 
-    /* ---------- Headline ---------- */
+    /* ---------- Headline with decode effect ---------- */
     .headline {
       font-size: clamp(17px, 4.2vw, 21px);
       font-weight: 700;
@@ -294,14 +282,13 @@
       padding-left: 16px;
       text-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
       background: linear-gradient(90deg, rgba(255, 121, 198, 0.08) 0%, transparent 70%);
-      transform: translateZ(40px);
       min-height: 63px;
     }
 
     .glitch-char {
       font-family: 'Orbitron', monospace;
       font-weight: 900;
-      opacity: 0.85;
+      color: var(--neon-blue);
     }
 
     /* ---------- Services ---------- */
@@ -312,7 +299,7 @@
       gap: 10px;
       margin: 8px 0 18px 0;
       transform: translateZ(25px);
-      transform-style: preserve-3d;
+      backface-visibility: hidden;
     }
 
     .service-item {
@@ -324,7 +311,7 @@
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.05);
       opacity: 0;
-      transform: translateX(-30px) translateZ(0px);
+      transform: translateX(-30px);
       animation: slideInStagger 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
       backdrop-filter: blur(8px);
@@ -337,30 +324,18 @@
     .service-item:nth-child(4) { animation-delay: 1.1s; }
 
     @keyframes slideInStagger {
-      to {
-        opacity: 1;
-        transform: translateX(0) translateZ(0px);
-      }
+      to { opacity: 1; transform: translateX(0); }
     }
 
     .service-item:hover {
       background: rgba(88, 166, 255, 0.12);
       border-color: rgba(88, 166, 255, 0.4);
-      transform: translateX(8px) translateZ(20px) scale(1.02);
+      transform: translateX(8px) scale(1.02);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(88, 166, 255, 0.1);
     }
 
-    .service-icon {
-      font-size: 20px;
-      filter: drop-shadow(0 0 6px var(--neon-pink));
-    }
-
-    .service-text {
-      font-weight: 500;
-      font-size: 14px;
-      color: #c9d1d9;
-      letter-spacing: 0.2px;
-    }
+    .service-icon { font-size: 20px; filter: drop-shadow(0 0 6px var(--neon-pink)); }
+    .service-text { font-weight: 500; font-size: 14px; color: #c9d1d9; }
 
     /* ---------- Gift Button ---------- */
     .gift-button {
@@ -384,7 +359,7 @@
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
       overflow: hidden;
       z-index: 1;
-      transform: translateZ(60px); /* Extreme depth protrusion */
+      transform: translateZ(40px);
     }
 
     .gift-button::before {
@@ -421,15 +396,12 @@
     }
 
     .gift-button:hover {
-      transform: translateY(-4px) translateZ(75px) scale(1.04);
+      transform: translateY(-4px) translateZ(40px) scale(1.03);
       box-shadow: 0 18px 45px rgba(255, 121, 198, 0.45);
-      color: #fff;
       letter-spacing: 0.6px;
     }
 
-    .gift-button:hover::after {
-      left: 100%;
-    }
+    .gift-button:hover::after { left: 100%; }
 
     .gift-emoji {
       display: inline-block;
@@ -442,7 +414,7 @@
       50% { transform: translateY(-6px); }
     }
 
-    /* ---------- Footer & QR ---------- */
+    /* ---------- Footer with real QR code ---------- */
     .footer-qr {
       display: flex;
       align-items: center;
@@ -450,7 +422,6 @@
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding-top: 20px;
       margin-top: auto;
-      transform: translateZ(35px);
     }
 
     .qr-container {
@@ -473,26 +444,14 @@
       100% { box-shadow: 0 0 15px rgba(88, 166, 255, 0.4); transform: scale(1); }
     }
 
-    .qr-mockup {
-      width: 52px;
-      height: 52px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 3px;
-      padding: 4px;
+    .qr-code-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
     }
 
-    .qr-cell {
-      border-radius: 2px;
-      background: #0d1117;
-    }
-
-    .qr-cell.highlight {
-      background: #58a6ff;
-      box-shadow: 0 0 4px rgba(88, 166, 255, 0.6);
-    }
-
-    /* Laser Scan Line */
+    /* Laser Scan Line (kept for decoration) */
     .laser-line {
       position: absolute;
       top: 0;
@@ -521,64 +480,30 @@
       max-width: 260px;
     }
 
-    .cta-text strong {
-      color: var(--neon-pink);
-      font-weight: 700;
-    }
+    .cta-text strong { color: var(--neon-pink); font-weight: 700; }
 
-    /* ---------- Responsive ---------- */
     @media (max-width: 550px) {
-      .poster {
-        padding: 28px 22px;
-        border-radius: 28px;
-      }
-      .brand {
-        font-size: 24px;
-      }
-      .blob-1, .blob-2 {
-        width: 350px;
-        height: 350px;
-      }
-      .blob-3 {
-        width: 200px;
-        height: 200px;
-      }
+      .poster { padding: 28px 22px; border-radius: 28px; }
+      .brand { font-size: 24px; }
+      .blob-1, .blob-2 { width: 350px; height: 350px; }
+      .blob-3 { width: 200px; height: 200px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- SVG Filters -->
-  <svg class="svg-filters" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <filter id="goo">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur" />
-        <feColorMatrix in="blur" mode="matrix" 
-          values="1 0 0 0 0  
-                  0 1 0 0 0  
-                  0 0 1 0 0  
-                  0 0 0 35 -15" result="goo" />
-        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-      </filter>
-    </defs>
-  </svg>
-
-  <!-- Canvas for Particle System -->
   <canvas id="particleCanvas"></canvas>
 
-  <!-- Organic Fluid Blobs -->
   <div class="fluid-layer">
     <div class="blob blob-1" id="blob1"></div>
     <div class="blob blob-2" id="blob2"></div>
     <div class="blob blob-3" id="blob3"></div>
   </div>
 
-  <!-- Grid Layer -->
   <div class="grid-layer">
     <div class="grid-inner" id="gridInner"></div>
   </div>
 
-  <!-- Poster Structure -->
   <div class="poster-wrapper" id="posterWrapper">
     <div class="poster" id="poster">
       <div class="glare" id="glareEffect"></div>
@@ -590,39 +515,22 @@
           <div class="headline" id="headline">Eskişehir'deki İşletmenizi Dijital Dünyanın Zirvesine Taşıyın!</div>
           
           <ul class="services">
-            <li class="service-item">
-              <span class="service-icon">🎬</span>
-              <span class="service-text"><strong>Profesyonel Reels</strong> & Video Kurgu</span>
-            </li>
-            <li class="service-item">
-              <span class="service-icon">🤖</span>
-              <span class="service-text"><strong>Python Tabanlı</strong> Akıllı Randevu & DM Botları</span>
-            </li>
-            <li class="service-item">
-              <span class="service-icon">🌐</span>
-              <span class="service-text"><strong>Modern Web</strong> Tasarımı & QR Menü</span>
-            </li>
-            <li class="service-item">
-              <span class="service-icon">📍</span>
-              <span class="service-text"><strong>Google Harita</strong> & Yerel SEO Yönetimi</span>
-            </li>
+            <li class="service-item"><span class="service-icon">🎬</span><span class="service-text"><strong>Profesyonel Reels</strong> & Video Kurgu</span></li>
+            <li class="service-item"><span class="service-icon">🤖</span><span class="service-text"><strong>Python Tabanlı</strong> Akıllı Randevu & DM Botları</span></li>
+            <li class="service-item"><span class="service-icon">🌐</span><span class="service-text"><strong>Modern Web</strong> Tasarımı & QR Menü</span></li>
+            <li class="service-item"><span class="service-icon">📍</span><span class="service-text"><strong>Google Harita</strong> & Yerel SEO Yönetimi</span></li>
           </ul>
         </div>
 
         <div>
-          <!-- Link updated to user's Instagram handle -->
           <a href="https://instagram.com/novakod.dijital" target="_blank" rel="noopener" class="gift-button">
             <span class="gift-emoji">🎁</span> Ücretsiz Dijital Analiz & İlk Reels Hediyesi İçin Tıklayın!
           </a>
 
           <div class="footer-qr">
             <div class="qr-container">
-              <div class="qr-mockup">
-                <div class="qr-cell highlight"></div><div class="qr-cell"></div><div class="qr-cell highlight"></div><div class="qr-cell"></div>
-                <div class="qr-cell"></div><div class="qr-cell highlight"></div><div class="qr-cell"></div><div class="qr-cell highlight"></div>
-                <div class="qr-cell highlight"></div><div class="qr-cell"></div><div class="qr-cell highlight"></div><div class="qr-cell"></div>
-                <div class="qr-cell"></div><div class="qr-cell highlight"></div><div class="qr-cell"></div><div class="qr-cell highlight"></div>
-              </div>
+              <!-- Real QR Code Image pointing to Instagram -->
+              <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=72x72&data=https://instagram.com/novakod.dijital" alt="Instagram QR Kodu" crossorigin="anonymous">
               <div class="laser-line"></div>
             </div>
             <div class="cta-text">
@@ -636,7 +544,7 @@
 
   <script>
     (() => {
-      // ==================== ADVANCED MATRIX/CYBERPUNK DECODE EFFECT ====================
+      // ==================== CYBERPUNK DECODE EFFECT ====================
       class TextDecoder {
         constructor(el) {
           this.el = el;
@@ -647,13 +555,10 @@
           this.target = targetText;
           this.queue = [];
           for (let i = 0; i < this.target.length; i++) {
-            const from = '';
-            const to = this.target[i];
             const start = Math.floor(Math.random() * 25);
             const end = start + Math.floor(Math.random() * 25) + 10;
-            this.queue.push({ from, to, start, end, char: '' });
+            this.queue.push({ from: '', to: this.target[i], start, end, char: '' });
           }
-          cancelAnimationFrame(this.frameRequest);
           this.frame = 0;
           this.update();
         }
@@ -670,7 +575,7 @@
                 char = this.chars[Math.floor(Math.random() * this.chars.length)];
                 this.queue[i].char = char;
               }
-              output += `<span class="glitch-char" style="color:var(--neon-blue);">${char}</span>`;
+              output += `<span class="glitch-char">${char}</span>`;
             } else {
               output += from;
             }
@@ -686,12 +591,12 @@
       }
 
       const headlineEl = document.getElementById('headline');
-      const originalHeadlineText = headlineEl.textContent.trim();
-      headlineEl.innerHTML = ''; 
+      const originalText = headlineEl.textContent.trim();
+      headlineEl.innerHTML = '';
       const decoder = new TextDecoder(headlineEl);
-      setTimeout(() => decoder.start(originalHeadlineText), 700);
+      setTimeout(() => decoder.start(originalText), 700);
 
-      // ==================== PARTICLE SYSTEM + EXPLOSION BURST ====================
+      // ==================== PARTICLE SYSTEM ====================
       const canvas = document.getElementById('particleCanvas');
       const ctx = canvas.getContext('2d');
       let width, height;
@@ -700,9 +605,7 @@
       const colors = ['#58a6ff', '#ff79c6', '#a371f7', '#79c0ff', '#ffb8e0'];
 
       class Particle {
-        constructor() {
-          this.reset(true);
-        }
+        constructor() { this.reset(true); }
         reset(initial = false, cx = null, cy = null) {
           this.x = cx !== null ? cx : Math.random() * width;
           this.y = cy !== null ? cy : (initial ? Math.random() * height : height + 20);
@@ -714,15 +617,12 @@
           this.trail = [];
           this.maxTrail = Math.floor(Math.random() * 5 + 3);
           this.isShockwave = cx !== null;
-          this.life = 1.0;
           this.decay = Math.random() * 0.02 + 0.015;
         }
         update(mx, my, mouseActive) {
           this.x += this.vx;
           this.y += this.vy;
-          
           if (this.isShockwave) {
-            this.vy += 0.02; 
             this.alpha -= this.decay;
             if (this.alpha <= 0) return false;
           } else {
@@ -740,10 +640,8 @@
             this.vx *= 0.995;
             this.vy *= 0.995;
           }
-          
           this.trail.push({ x: this.x, y: this.y });
           if (this.trail.length > this.maxTrail) this.trail.shift();
-          
           if (!this.isShockwave && (this.y < -30 || this.x < -30 || this.x > width + 30 || this.y > height + 50)) {
             this.reset();
           }
@@ -752,11 +650,10 @@
         draw(ctx) {
           for (let i = 0; i < this.trail.length; i++) {
             const t = this.trail[i];
-            const trailAlpha = (i / this.trail.length) * this.alpha * 0.4;
             ctx.beginPath();
             ctx.arc(t.x, t.y, this.radius * 0.8, 0, Math.PI * 2);
             ctx.fillStyle = this.color;
-            ctx.globalAlpha = trailAlpha;
+            ctx.globalAlpha = (i / this.trail.length) * this.alpha * 0.4;
             ctx.fill();
           }
           ctx.globalAlpha = this.alpha;
@@ -778,47 +675,30 @@
       window.addEventListener('resize', resizeCanvas);
       resizeCanvas();
 
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        particles.push(new Particle());
-      }
+      for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
 
       function triggerShockwave(x, y) {
-        const burstCount = 18;
-        for (let i = 0; i < burstCount; i++) {
+        for (let i = 0; i < 18; i++) {
           let p = new Particle();
           p.reset(false, x, y);
-          const angle = (i / burstCount) * Math.PI * 2 + Math.random();
-          const speed = Math.random() * 3.5 + 2.0;
-          p.vx = Math.cos(angle) * speed;
-          p.vy = Math.sin(angle) * speed;
+          const angle = (i / 18) * Math.PI * 2 + Math.random();
+          p.vx = Math.cos(angle) * (Math.random() * 3.5 + 2);
+          p.vy = Math.sin(angle) * (Math.random() * 3.5 + 2);
           particles.push(p);
         }
       }
-
-      window.addEventListener('click', (e) => {
-        triggerShockwave(e.clientX, e.clientY);
-      });
+      window.addEventListener('click', (e) => triggerShockwave(e.clientX, e.clientY));
 
       let mouseX = null, mouseY = null, isMouseActive = false;
-      window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        isMouseActive = true;
-      });
+      window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; isMouseActive = true; });
       window.addEventListener('mouseleave', () => { isMouseActive = false; });
-      
       window.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-          mouseX = e.touches[0].clientX;
-          mouseY = e.touches[0].clientY;
-          isMouseActive = true;
-        }
+        if (e.touches.length > 0) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; isMouseActive = true; }
       }, { passive: true });
       window.addEventListener('touchend', () => { isMouseActive = false; });
 
       function animateParticles() {
         ctx.clearRect(0, 0, width, height);
-        
         for (let i = 0; i < particles.length; i++) {
           if (particles[i].isShockwave) continue;
           for (let j = i + 1; j < particles.length; j++) {
@@ -836,18 +716,12 @@
             }
           }
         }
-        
-        particles = particles.filter(p => {
-          const keep = p.update(mouseX, mouseY, isMouseActive);
-          if (keep) p.draw(ctx);
-          return keep;
-        });
-        
+        particles = particles.filter(p => { const keep = p.update(mouseX, mouseY, isMouseActive); if (keep) p.draw(ctx); return keep; });
         requestAnimationFrame(animateParticles);
       }
       animateParticles();
 
-      // ==================== PARALLAX POSTER + FLUID INTERACTION + GRID SHIFT ====================
+      // ==================== 3D INTERACTION ====================
       const poster = document.getElementById('poster');
       const gridInner = document.getElementById('gridInner');
       const glare = document.getElementById('glareEffect');
@@ -858,31 +732,19 @@
       function updateInteraction(normX, normY) {
         const rotateX = normY * -14;
         const rotateY = normX * 14;
-        poster.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        
+        poster.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0)`;
         gridInner.style.transform = `rotateX(60deg) translateY(-120px) translateX(${normX * -35}px) translateY(${normY * -35}px)`;
-        
         const shadowX = normX * 18;
         const shadowY = normY * 18;
-        poster.style.boxShadow = `
-          0 40px 80px rgba(0,0,0,0.9),
-          ${shadowX}px ${shadowY}px 45px rgba(88,166,255,0.18),
-          0 0 50px rgba(255,121,198,0.3),
-          inset 0 0 0 1px rgba(88,166,255,0.15)
-        `;
-        
-        glare.style.background = `
-          radial-gradient(ellipse at ${50 + normX * 25}% ${50 + normY * 25}%, rgba(255,255,255,0.15) 0%, transparent 50%),
-          radial-gradient(ellipse at ${50 - normX * 20}% ${50 - normY * 20}%, rgba(88,166,255,0.1) 0%, transparent 50%)
-        `;
-        
+        poster.style.boxShadow = `0 40px 80px rgba(0,0,0,0.9), ${shadowX}px ${shadowY}px 45px rgba(88,166,255,0.18), 0 0 50px rgba(255,121,198,0.3), inset 0 0 0 1px rgba(88,166,255,0.15)`;
+        glare.style.background = `radial-gradient(ellipse at ${50 + normX * 25}% ${50 + normY * 25}%, rgba(255,255,255,0.15) 0%, transparent 50%), radial-gradient(ellipse at ${50 - normX * 20}% ${50 - normY * 20}%, rgba(88,166,255,0.1) 0%, transparent 50%)`;
         blob1.style.transform = `translate(${normX * 80}px, ${normY * 80}px) scale(1.05)`;
         blob2.style.transform = `translate(${normX * -70}px, ${normY * -70}px) scale(1.1)`;
         blob3.style.transform = `translate(calc(-50% + ${normX * 50}px), calc(-50% + ${normY * 50}px)) scale(1.1)`;
       }
 
       function resetInteraction() {
-        poster.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        poster.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0)';
         gridInner.style.transform = 'rotateX(60deg) translateY(-120px)';
         poster.style.boxShadow = '0 40px 80px rgba(0,0,0,0.9), 0 0 30px rgba(88,166,255,0.15), 0 0 0 1px rgba(88,166,255,0.15) inset';
         glare.style.background = 'radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.12) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(88,166,255,0.08) 0%, transparent 50%)';
@@ -900,46 +762,28 @@
 
       if (window.DeviceOrientationEvent) {
         let gyroActive = false;
-        
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-          const permissionBtn = document.createElement('button');
-          permissionBtn.textContent = '✨ Etkileşim için dokunun';
-          permissionBtn.style.cssText = `
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
-            color: white; border: 1px solid #ff79c6; padding: 12px 28px;
-            border-radius: 30px; font-weight: 600; font-size: 14px;
-            box-shadow: 0 0 25px rgba(255,121,198,0.4); cursor: pointer;
-            animation: floatUpDown 2s infinite;
-          `;
-          document.body.appendChild(permissionBtn);
-          
-          const style = document.createElement('style');
-          style.textContent = '@keyframes floatUpDown { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-6px)} }';
-          document.head.appendChild(style);
-          
-          permissionBtn.addEventListener('click', async () => {
+          const btn = document.createElement('button');
+          btn.textContent = '✨ Etkileşim için dokunun';
+          btn.style.cssText = 'position:fixed;bottom:25px;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(0,0,0,0.85);backdrop-filter:blur(15px);color:white;border:1px solid #ff79c6;padding:12px 28px;border-radius:30px;font-weight:600;font-size:14px;box-shadow:0 0 25px rgba(255,121,198,0.4);cursor:pointer;';
+          document.body.appendChild(btn);
+          btn.addEventListener('click', async () => {
             try {
-              const permission = await DeviceOrientationEvent.requestPermission();
-              if (permission === 'granted') {
-                gyroActive = true;
-                permissionBtn.remove();
-              }
-            } catch (e) {
-              permissionBtn.remove();
-            }
+              const perm = await DeviceOrientationEvent.requestPermission();
+              if (perm === 'granted') { gyroActive = true; btn.remove(); }
+            } catch (e) { btn.remove(); }
           });
         } else {
-          gyroActive = true; 
+          gyroActive = true;
         }
-
         window.addEventListener('deviceorientation', (e) => {
           if (!gyroActive) return;
-          const gamma = e.gamma || 0; 
-          const beta = e.beta || 0;   
-          const normX = Math.max(-1, Math.min(1, gamma / 40));
-          const normY = Math.max(-1, Math.min(1, (beta - 35) / 40));
-          updateInteraction(normX, normY);
+          const gamma = e.gamma || 0;
+          const beta = e.beta || 0;
+          updateInteraction(
+            Math.max(-1, Math.min(1, gamma / 40)),
+            Math.max(-1, Math.min(1, (beta - 35) / 40))
+          );
         });
       }
     })();
